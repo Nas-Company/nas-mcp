@@ -1,2 +1,7 @@
-# nas-mcp
-Official Nas.com MCP Server for AI agents. Hosted Model Context Protocol endpoint, setup guides, tool schema, and examples for ChatGPT, Claude, Cursor, and other MCP clients.
+# Nas.com MCP Server
+
+Official hosted MCP server for Nas.com.
+
+Server URL: https://mcp.nas.com/mcp  
+
+Docs: https://nas.com/mcp
