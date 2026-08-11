@@ -31,27 +31,31 @@ Do not use `https://nas.com/mcp` as the MCP endpoint.
 
 ## OAuth and Scopes
 
-Authenticate through Cursor's MCP OAuth flow. The public metadata chain is:
+Discover tools first. Authenticate through Cursor's MCP OAuth flow when a
+protected tool challenges. The public metadata chain is:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
-Request only the task's required read scopes:
+Request only the task's required scopes:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
 
 ## Cursor Agent Rule
 
 ```text
 For Nas.com MCP tasks, use the `nas-com` remote MCP server at
-https://mcp.nas.com/mcp. Run initialize, tools/list, resources/list, and
-resources/templates/list before tool use. Treat authenticated MCP discovery as
-the source of truth. Do not infer undocumented Nas.com APIs, write tools,
+https://mcp.nas.com/mcp. Run initialize, notifications/initialized, and
+tools/list before tool use. Authenticate only when a protected
+tool requires it and treat live MCP discovery as the source of truth. Do not
+infer undocumented Nas.com APIs, write tools,
 webhooks, checkout/payment APIs, or API key flows.
 ```
 

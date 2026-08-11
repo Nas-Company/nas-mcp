@@ -37,14 +37,16 @@ NAS publishes the OAuth metadata chain at:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
-Request only the task's required read scopes:
+Request only the task's required scopes:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
 
 ## Optional Tool Controls
@@ -65,8 +67,9 @@ tool access:
 1. Add `nas-com` to `settings.json`.
 2. Run `/mcp` to inspect connected servers.
 3. Run `/mcp auth nas-com` if authentication is required.
-4. Confirm tools, prompts, and resources are discovered.
-5. Use only tools and resources returned by authenticated discovery.
+4. Confirm the live tools are discovered.
+5. Use only tools returned by live discovery. Anonymous
+   onboarding tools do not require `/mcp auth`.
 
 ## Gemini Instruction Snippet
 

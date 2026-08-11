@@ -26,29 +26,31 @@ installation guide.
 
 ## Authentication
 
-Complete OAuth in the client. Use the published metadata chain:
+Connect and discover tools first. Complete OAuth in the client when a protected
+tool challenges, then retry that tool. Use the published metadata chain:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
 Supported documented scopes:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
 
 ## First Use Checklist
 
 1. Connect the `nas-com` MCP server.
-2. Complete OAuth.
-3. Run `initialize`.
-4. Run `tools/list`.
-5. Run `resources/list`.
-6. Run `resources/templates/list`.
-7. Use only tools and resources returned by authenticated discovery.
+2. Run `initialize` and send `notifications/initialized`.
+3. Run `tools/list`.
+4. Start with an anonymous onboarding tool when it fits the request.
+5. Complete OAuth only when a protected tool requires it, then retry the tool.
+6. Use only tools returned by live discovery.
 
 ## Claude Instruction Snippet
 
@@ -58,5 +60,5 @@ product, and physical product order context. The server URL is
 https://mcp.nas.com/mcp. Run discovery before invoking tools. Do not invent
 Nas.com seller/admin, checkout, payment, webhook, API key, OAuth, REST,
 GraphQL, or MCP write contracts that are not documented or returned by
-authenticated discovery.
+live discovery.
 ```

@@ -5,7 +5,8 @@ discovery documents, MCP tool discovery, or both.
 
 ## Short Answer
 
-Use MCP tool discovery for authenticated Nas.com account context.
+Use MCP tool discovery for anonymous onboarding and OAuth-protected Nas.com
+account context.
 
 Use the public OpenAPI document and developer resources for public discovery
 surfaces only.
@@ -16,31 +17,38 @@ documented.
 
 ## Source Selection
 
-| Need | Use | Notes |
-| --- | --- | --- |
-| Authenticated business, member, product, or order context | Hosted MCP server | Connect to `https://mcp.nas.com/mcp`, complete OAuth, then run discovery. |
-| Current MCP tools and resources | MCP `tools/list`, `resources/list`, `resources/templates/list` | Authenticated discovery is the source of truth. |
-| Public developer index | `https://nas.com/developers` and `https://nas.com/developers.md` | Use for resource discovery and public API status. |
-| Public discovery endpoints | `https://nas.com/openapi.json` | Covers public discovery resources only. |
-| API behavior guidance for agents | `https://nas.com/api/llms.txt` | Use for auth boundary, no-invention rules, and error handling guidance. |
-| Product positioning and brand context | `https://nas.com/llms.txt` and `https://nas.com/llms-full.txt` | Use Nas.com as the canonical domain. |
+- For business onboarding, connect to the hosted MCP and discover anonymously.
+  Use only the onboarding tools that advertise `noauth`.
+- For protected business, member, product, or order context, use the hosted MCP.
+  Complete OAuth when the selected tool returns an authentication challenge.
+- For the current MCP catalog, use `tools/list`. Live discovery is the source
+  of truth.
+- For the public developer index, use `https://nas.com/developers` and
+  `https://nas.com/developers.md`.
+- For public discovery endpoints, use `https://nas.com/openapi.json`.
+- For agent API behavior, use `https://nas.com/api/llms.txt`.
+- For product and brand context, use `https://nas.com/llms.txt` and
+  `https://nas.com/llms-full.txt`.
 
 ## MCP Tool Discovery Flow
 
 1. Configure the hosted MCP endpoint:
    `https://mcp.nas.com/mcp`.
-2. Authenticate through OAuth.
-3. Request only required read scopes.
-4. Run `initialize`.
-5. Run `tools/list`.
-6. Run `resources/list`.
-7. Run `resources/templates/list`.
-8. Invoke only returned tools and resources.
+2. Run `initialize` and send `notifications/initialized`.
+3. Run `tools/list` and inspect each tool's security metadata.
+4. Invoke an anonymous onboarding tool when it fits the request.
+5. If a protected tool challenges, complete OAuth with only the required
+   scopes and retry that tool.
+6. Invoke only returned tools.
 
-## Documented Hosted MCP Tools
+## Representative Protected Tools
 
-Public NAS docs currently identify these hosted MCP controls:
+The current server includes these representative protected controls:
 
+- `get_current_user`
+  - Purpose: return the normalized profile for the authenticated Nas.com user.
+- `check_business_tool_access`
+  - Purpose: verify plan and feature access before a protected business action.
 - `list_members`
   - Required scope: `nas.members.read`
   - Purpose: list members for a community managed by the authenticated NAS user.
@@ -53,7 +61,8 @@ Public NAS docs currently identify these hosted MCP controls:
   - Purpose: get a single physical product order in a community managed by the
     authenticated NAS user.
 
-This list can change. Always use authenticated MCP discovery at runtime.
+This list is intentionally incomplete and can change. Always use live MCP
+discovery at runtime.
 
 ## OpenAPI Guidance
 
@@ -67,22 +76,32 @@ behavior.
 
 ## Authentication Boundary
 
-Public discovery documents are unauthenticated. The official hosted MCP requires
-bearer authentication.
+Public discovery documents are unauthenticated. The hosted MCP uses lazy
+authentication: connection, discovery, and the supported text-only onboarding
+path work anonymously; all other tools require a bearer token.
 
 OAuth metadata:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
 Supported documented scopes:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
+
+Anonymous onboarding tools are `create_image_asset_upload` with
+`useCase: "onboarding"`, `create_onboarded_business`,
+`get_onboarding_plan_options`, and `generate_plan_checkout_link`. Protected
+business tools additionally enforce business, plan, and feature authorization.
+Use `check_business_tool_access` before offering a protected action or
+collecting its inputs.
 
 ## Error Handling
 
@@ -106,7 +125,10 @@ when present.
 
 - Do not configure MCP clients with `https://nas.com/mcp`; use
   `https://mcp.nas.com/mcp`.
-- Do not claim unauthenticated MCP access is available.
+- Do not require sign-in merely to connect, discover tools, or use the
+  documented anonymous onboarding path.
+- Do not treat authentication as proof that a protected business action is
+  authorized.
 - Do not invent dynamic client registration or OAuth metadata endpoints.
 - Do not treat public page context resources as private API contracts.
 - Do not claim public webhook support unless Nas.com publishes an authoritative

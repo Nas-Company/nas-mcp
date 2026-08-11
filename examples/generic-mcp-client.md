@@ -19,44 +19,56 @@ installation guide.
 Use Streamable HTTP.
 
 Custom clients should send MCP JSON-RPC 2.0 requests over HTTP and follow the
-MCP transport rules for session handling, streaming, initialization, tools,
-resources, and templates.
+MCP transport rules for session handling, streaming, initialization, and
+tools.
 
 ## Authentication
 
-The official hosted Nas.com MCP server requires bearer authentication. Use OAuth
-through the published metadata chain:
+The hosted server uses lazy authentication. Connect and discover tools without
+a bearer token. Use OAuth through the published metadata chain only when a
+protected tool challenges:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
 Send the resulting bearer token in the HTTP `Authorization` header.
 
-Request only the task's required read scopes:
+Request only the task's required scopes:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
 
 ## Discovery Flow
 
-After authentication, run MCP discovery before invoking any tool:
+Run MCP discovery before invoking any tool:
 
 1. `initialize`
-2. `tools/list`
-3. `resources/list`
-4. `resources/templates/list`
+2. `notifications/initialized`
+3. `tools/list`
 
-Authenticated discovery is the runtime source of truth. Tool availability can
+Live discovery is the runtime source of truth. Tool availability can
 change, so clients should not hardcode tool lists as the only source of truth.
 
-## Documented Hosted MCP Tools
+Anonymous onboarding tools are `create_image_asset_upload` with
+`useCase: "onboarding"`, `create_onboarded_business`,
+`get_onboarding_plan_options`, and `generate_plan_checkout_link`. All other
+tools require OAuth. An invalid supplied credential must be rejected rather
+than treated as anonymous.
 
-Public NAS documentation currently identifies these hosted MCP controls:
+## Representative Protected Tools
 
+Live discovery is authoritative. Representative protected controls include:
+
+- `get_current_user`
+  - Purpose: return the normalized profile for the authenticated Nas.com user.
+- `check_business_tool_access`
+  - Purpose: verify plan and feature access before a protected business action.
 - `list_members`
   - Required scope: `nas.members.read`
   - Purpose: list members for a community managed by the authenticated NAS user.
@@ -84,7 +96,10 @@ Surface `error.data.resolution` to the user when present.
 
 ## Client Guardrails
 
-- Do not claim unauthenticated MCP access is available.
+- Do not require authentication for connection, discovery, or the documented
+  anonymous onboarding path.
+- Before a protected business action, call `check_business_tool_access` and do
+  not proceed if it blocks or cannot verify permission.
 - Do not invent dynamic registration endpoints.
 - Do not invent seller/admin, checkout, payment, webhook, API key, OAuth, REST,
   GraphQL, or MCP write contracts.
