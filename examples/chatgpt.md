@@ -16,8 +16,9 @@ installation guide.
 
 ## Authentication
 
-Use the connector's OAuth flow. The MCP protected-resource metadata is published
-at:
+Connect and discover tools before forcing sign-in. When a protected tool
+challenges, use the connector's OAuth flow and retry that tool. The MCP
+protected-resource metadata is published at:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
@@ -26,27 +27,28 @@ https://mcp.nas.com/.well-known/oauth-protected-resource
 The authorization server metadata is published at:
 
 ```text
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
 Request only the scopes needed for the task:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
 
 ## Discovery
 
-After authentication, inspect the server before invoking any tool:
+Inspect the server before invoking any tool:
 
 1. `initialize`
-2. `tools/list`
-3. `resources/list`
-4. `resources/templates/list`
+2. `notifications/initialized`
+3. `tools/list`
 
-Authenticated discovery is the source of truth for available tools and
-resources.
+Live tool discovery is the source of truth. The onboarding tools that advertise
+`noauth` can run anonymously; all other tools start OAuth on demand.
 
 ## Agent Instructions
 
@@ -66,7 +68,7 @@ discovery.
 ```text
 When a user asks for Nas.com business, member, product, or physical product
 order context, use the official hosted Nas.com MCP server at
-https://mcp.nas.com/mcp. Authenticate through OAuth, request only necessary
-read scopes, run MCP discovery before using tools, and do not infer undocumented
-Nas.com APIs or write operations.
+https://mcp.nas.com/mcp. Run MCP discovery before using tools. Authenticate
+through OAuth only when a protected tool requires it, request only necessary
+scopes, and do not infer undocumented Nas.com APIs or write operations.
 ```

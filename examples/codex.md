@@ -31,7 +31,7 @@ installation guide.
 
 ## OAuth
 
-After adding the server, run:
+Protected tools require OAuth. When one is needed, run:
 
 ```bash
 codex mcp login nas-com
@@ -41,14 +41,16 @@ Use the published NAS OAuth metadata chain:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
-Request only the task's required read scopes:
+Request only the task's required scopes:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
 
 If the server advertises supported scopes during OAuth, Codex should prefer the
@@ -57,23 +59,24 @@ server-advertised scopes.
 ## First Use Checklist
 
 1. Add `[mcp_servers.nas-com]` to `config.toml`.
-2. Run `codex mcp login nas-com`.
-3. Start or restart Codex.
-4. In the Codex TUI, use `/mcp` to confirm the server is active.
-5. Run discovery before tool use:
-   `initialize`, `tools/list`, `resources/list`, and `resources/templates/list`.
-6. Use only tools and resources returned by authenticated discovery.
+2. Start or restart Codex.
+3. In the Codex TUI, use `/mcp` to confirm the server is active.
+4. Run discovery before tool use:
+   `initialize`, `notifications/initialized`, and `tools/list`.
+5. Run `codex mcp login nas-com` only when a protected tool is needed, then
+   retry that tool.
+6. Use only tools returned by live discovery.
 
 ## Codex Instruction Snippet
 
 ```text
 Use the `nas-com` MCP server for authenticated Nas.com business, member,
 product, and physical product order context. The server URL is
-https://mcp.nas.com/mcp. Authenticate with `codex mcp login nas-com`, run MCP
-discovery before invoking tools, and treat authenticated discovery as the
-runtime source of truth. Do not infer undocumented Nas.com seller/admin,
-checkout, payment, webhook, API key, OAuth, REST, GraphQL, or MCP write
-contracts.
+https://mcp.nas.com/mcp. Run MCP discovery before invoking tools. Authenticate
+with `codex mcp login nas-com` only when a protected tool requires it, and
+treat live discovery as the runtime source of truth. Do not infer undocumented
+Nas.com seller/admin, checkout, payment, webhook, API key, OAuth, REST, GraphQL,
+or MCP write contracts.
 ```
 
 ## When To Use It

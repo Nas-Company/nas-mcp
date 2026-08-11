@@ -46,24 +46,27 @@ at:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
-Request only the task's required read scopes:
+Request only the task's required scopes:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
 
 ## First Use Checklist
 
 1. Add `nas-com` in Cascade MCP settings or `mcp_config.json`.
-2. Authenticate through the client OAuth flow.
-3. Confirm the MCP server is active in Cascade MCP settings.
-4. Enable only the NAS tools needed for the task.
-5. Run discovery before tool use:
-   `initialize`, `tools/list`, `resources/list`, and `resources/templates/list`.
+2. Confirm the MCP server is active in Cascade MCP settings.
+3. Enable only the NAS tools needed for the task.
+4. Run discovery before tool use:
+   `initialize`, `notifications/initialized`, and `tools/list`.
+5. Authenticate through the client OAuth flow only when a protected tool is
+   needed, then retry it.
 
 ## Cascade Rule Snippet
 

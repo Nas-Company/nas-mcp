@@ -53,24 +53,28 @@ OAuth metadata chain at:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
-Request only the task's required read scopes:
+Request only the task's required scopes:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
 
 ## First Use Checklist
 
 1. Add `nas-com` under `.continue/mcpServers/` or your Continue config.
 2. Use Continue Agent mode; MCP tools are intended for agent use.
-3. Authenticate through the client flow when prompted.
-4. Run discovery before tool use:
-   `initialize`, `tools/list`, `resources/list`, and `resources/templates/list`.
-5. Use only tools and resources returned by authenticated discovery.
+3. Run discovery before tool use:
+   `initialize`, `notifications/initialized`, and `tools/list`.
+4. Authenticate through the client flow only when a protected tool prompts,
+   then retry that tool.
+5. Use only tools returned by live discovery. Anonymous
+   onboarding tools do not require the authentication step.
 
 ## Continue Rule Snippet
 

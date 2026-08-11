@@ -41,32 +41,34 @@ NAS publishes the OAuth metadata chain at:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
-Request only the task's required read scopes:
+Request only the task's required scopes:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
 
 ## First Use Checklist
 
 1. Add `nas-com` as a custom context server.
-2. Complete OAuth when prompted.
-3. Check the Agent Panel settings indicator; it should show the server as
+2. Check the Agent Panel settings indicator; it should show the server as
    active.
-4. Run discovery before tool use:
-   `initialize`, `tools/list`, `resources/list`, and `resources/templates/list`.
-5. Use only tools and resources returned by authenticated discovery.
+3. Run discovery before tool use:
+   `initialize`, `notifications/initialized`, and `tools/list`.
+4. Complete OAuth when a protected tool prompts for it, then retry the tool.
+5. Use only tools returned by live discovery.
 
 ## Zed Instruction Snippet
 
 ```text
 Use the `nas-com` MCP context server for authenticated Nas.com business,
 member, product, and physical product order context. The server URL is
-https://mcp.nas.com/mcp. Treat authenticated MCP discovery as the runtime source
-of truth. Do not infer undocumented Nas.com APIs, write tools, webhooks,
-checkout/payment APIs, or API key flows.
+https://mcp.nas.com/mcp. Discover tools before authenticating and treat live
+MCP discovery as the runtime source of truth. Do not infer undocumented Nas.com
+APIs, write tools, webhooks, checkout/payment APIs, or API key flows.
 ```

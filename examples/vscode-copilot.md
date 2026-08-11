@@ -40,14 +40,16 @@ OAuth metadata chain at:
 
 ```text
 https://mcp.nas.com/.well-known/oauth-protected-resource
-https://auth.nas.io/.well-known/oauth-authorization-server
+https://auth.nas.com/.well-known/oauth-authorization-server
 ```
 
-Request only the task's required read scopes:
+Request only the task's required scopes:
 
 - `nas.communities.read`
+- `nas.communities.write`
 - `nas.members.read`
 - `nas.products.read`
+- `nas.products.write`
 - `nas.orders.read`
 
 ## First Use Checklist
@@ -55,19 +57,20 @@ Request only the task's required read scopes:
 1. Add `nas-com` to workspace or user `mcp.json`.
 2. Start the server from VS Code's MCP controls.
 3. Confirm that you trust the server when prompted.
-4. Authenticate through the MCP OAuth flow.
-5. Use the chat tools picker to confirm NAS tools are available.
-6. Run discovery before tool use:
-   `initialize`, `tools/list`, `resources/list`, and `resources/templates/list`.
-7. Use only tools and resources returned by authenticated discovery.
+4. Use the chat tools picker to confirm NAS tools are available.
+5. Run discovery before tool use:
+   `initialize`, `notifications/initialized`, and `tools/list`.
+6. Authenticate through the MCP OAuth flow only when a protected tool is
+   needed, then retry that tool.
+7. Use only tools returned by live discovery.
 
 ## VS Code Instruction Snippet
 
 ```text
 Use the `nas-com` MCP server for authenticated Nas.com business, member,
 product, and physical product order context. The server URL is
-https://mcp.nas.com/mcp. Trust and authenticate the server in VS Code before
-tool use. Treat authenticated MCP discovery as the runtime source of truth. Do
-not infer undocumented Nas.com seller/admin, checkout, payment, webhook, API
-key, OAuth, REST, GraphQL, or MCP write contracts.
+https://mcp.nas.com/mcp. Trust the server, discover tools, and authenticate only
+when a protected tool requires it. Treat live MCP discovery as the runtime
+source of truth. Do not infer undocumented Nas.com seller/admin, checkout,
+payment, webhook, API key, OAuth, REST, GraphQL, or MCP write contracts.
 ```
