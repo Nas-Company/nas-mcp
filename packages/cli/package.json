@@ -1,0 +1,23 @@
+{
+  "name": "@nas/cli",
+  "version": "0.1.0",
+  "description": "Official Nas.com command-line client for public discovery and the hosted MCP server",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "bin": { "nas": "dist/index.js" },
+  "files": ["dist/*.js", "README.md", "LICENSE"],
+  "keywords": ["nas", "nas.com", "cli", "mcp", "model-context-protocol", "ai-agents"],
+  "homepage": "https://nas.com/developers",
+  "bugs": { "url": "https://github.com/Nas-Company/nas-mcp/issues" },
+  "repository": { "type": "git", "url": "git+https://github.com/Nas-Company/nas-mcp.git", "directory": "packages/cli" },
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "verify:pack": "node scripts/verify-pack.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": { "@modelcontextprotocol/sdk": "1.29.0" },
+  "devDependencies": { "@types/node": "^22.0.0", "typescript": "^5.5.4" }
+}
