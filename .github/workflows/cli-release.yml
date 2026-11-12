@@ -1,0 +1,46 @@
+name: CLI release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact approved package version
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: npm-release
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: packages/cli
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: Enforce publication prerequisites
+        env:
+          APPROVED: ${{ vars.NAS_CLI_PUBLICATION_APPROVED }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          node --input-type=module -e "import fs from 'node:fs'; const p=JSON.parse(fs.readFileSync('package.json')); if(process.env.APPROVED!=='true'||p.license==='UNLICENSED'||!p.license||p.version!==process.env.RELEASE_VERSION) process.exit(1);"
+      - run: npm install --global npm@11
+      - run: npm install --no-package-lock
+      - run: npm test
+      - run: npm run verify:pack
+      - name: Publish (provenance requires public source)
+        env:
+          SOURCE_IS_PRIVATE: ${{ github.event.repository.private }}
+        run: |
+          if [ "$SOURCE_IS_PRIVATE" = "false" ]; then
+            npm publish --access public --provenance
+          else
+            npm publish --access public --provenance=false
+          fi

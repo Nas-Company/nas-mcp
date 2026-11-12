@@ -39,6 +39,12 @@ MCP client with that URL. Configure clients with `https://mcp.nas.com/mcp`.
 - [Zed](examples/zed.md)
 - [OpenAPI or MCP tool schema guide](openapi-or-tool-schema.md)
 
+## Command-Line Client
+
+[`packages/cli`](packages/cli) contains the official `nas` CLI for public
+discovery and hosted MCP tool calls. Its npm package is not published yet; see
+the [package README](packages/cli/README.md) for commands and build steps.
+
 ## Agent Guidelines
 
 1. Treat Nas.com as the canonical brand and domain. Nas.io is the legacy domain.
